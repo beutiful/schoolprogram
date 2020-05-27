@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset = "utf-8">
+		<title>校园小商品网</title>
+		<script src="https://cdn.staticfile.org/jquery/2.0.0/jquery.min.js"></script>
+			
+		<link rel="stylesheet" type="text/css" href="one.css">
+		<script type="text/javascript" src="move.js"></script>
+		<script type="text/javascript">
+		
+			window.onload = function(){
+				
+				var page = "/SchoolShop/checkLogin";
+				 $.ajax({
+		             type:"post",
+		             url: page,
+		             contentType : "application/json;charset=UTF-8",
+		             success: function(result){
+		            	 if(typeof result['userMemberShip'] !='undefined'){
+		            		 $("#loginSentence").text("欢迎你,"+result['userMemberShip']);
+		            		 $("#loginSentence").attr("href","/SchoolShop/pages/me/shopping_car.html");
+		            	 } 	
+		            	 else
+			            	 window.location.href = "/SchoolShop/login";
+		             }
+		          });  
+				
+				$("#mySeller").click(function(){
+					var page = "/SchoolShop/checkLogin";
+					$.ajax({
+			             type:"post",
+			             url: page,
+			             contentType : "application/json;charset=UTF-8",
+			             success: function(result){
+			            	 if(typeof result['userMemberShip'] =='undefined'){
+					          	 	alert("你尚未登陆");
+				            		window.location.href="/SchoolShop/login";
+			            	 }
+			            	 else{
+			            		 window.location.href="sell-login.html";
+			            	 } 
+			             }
+			          });  
+				});
+				
+				$("#serachButton").click(function(){
+					window.location.href="/SchoolShop/pages/sousuo.html?val="+$("#searchtext").val();
+				});
+			
+				//食品区域
+				var imglist = document.getElementById("img1");
+				var imgAll = document.getElementById("img1").getElementsByTagName("img");
+				//设置导航框默认样式
+				var index = 0;
+				//获取所有的a
+				var allA = document.getElementById("navDiv").getElementsByTagName("a");
+				//设置默认选中的效果
+				allA[index].style.backgroundColor = "black";
+				img1.style.width = 600*imgAll.length+"px";
+				
+				
+				for(var i=0;i<allA.length;i++){
+				
+					allA[i].num = i;
+					
+					allA[i].onclick = function(){
+						
+						clearInterval(timer);
+						
+						
+						index = this.num;
+						//切换图片
+						imglist.style.left= -600*index + "px";
+					
+						setA();
+					//	authchange();
+						move(imglist,"left",-600*index,0,function(){
+							authchange();
+						});
+					}; 
+				}
+				function setA(){
+				
+					if(index>=imgAll.length-1){
+						index = 0;
+						imglist.style.left = 0;
+						}
+					for(var i=0;i<allA.length;i++){
+						allA[i].style.backgroundColor="";
+					}
+						allA[index].style.backgroundColor="black";
+				}
+				
+				authchange();
+				
+				var timer;
+				function authchange(){
+				
+				//开启定时器来实现自动切换
+				
+					timer=setInterval(function(){
+						index++;
+					
+						index %=imgAll.length;
+						move(imglist,"left",-600*index,20,function(){
+							setA();
+					});
+				},2000);
+				}
+				
+								
+				var imglisttwo = document.getElementById("img2");
+				var imgtwo = document.getElementById("img2").getElementsByTagName("img");
+				var alltwo = document.getElementById("navDiv2").getElementsByTagName("a");
+				indextwo = 0;
+				alltwo[indextwo].style.backgroundColor = "black";
+				img2.style.width = 600*imgtwo.length+410+"px";
+				
+				for(var i =0;i<alltwo.length;i++){
+					alltwo[i].num = i;
+					alltwo[i].onclick=function(){
+						indextwo = this.num;
+						imglisttwo.style.left =-600*indextwo+"px";
+						setA3(imglisttwo,indextwo,imgtwo.length,alltwo);
+					
+					}
+				}
+				
+				var imglistthree = document.getElementById("img3");
+				var imgthree = document.getElementById("img3").getElementsByTagName("img");
+				var allthree = document.getElementById("navDiv3").getElementsByTagName("a");
+				indexthree = 0;
+				allthree[indexthree].style.backgroundColor = "black";
+				img3.style.width = 600*imgthree.length+410+"px";
+				
+				for(var i =0;i<allthree.length;i++){
+					allthree[i].num = i;
+					allthree[i].onclick=function(){
+						indexthree = this.num;
+						imglistthree.style.left =-600*indexthree+"px";
+						setA3(imglistthree,indexthree,imgthree.length,allthree);
+					
+					}
+				}
+
+				var imglistfour = document.getElementById("img4");
+				var imgfour = document.getElementById("img4").getElementsByTagName("img");
+				var allfour = document.getElementById("navDiv4").getElementsByTagName("a");
+				indexfour = 0;
+				allfour[indexfour].style.backgroundColor = "black";
+				img4.style.width = 600*imgfour.length+410+"px";
+				
+				for(var i =0;i<allfour.length;i++){
+					allfour[i].num = i;
+					allfour[i].onclick=function(){
+						indexfour = this.num;
+						imglistfour.style.left =-600*indexfour+"px";
+						setA3(imglistfour,indexfour,imgfour.length,allfour);
+					
+					}
+				}
+
+
+		var aSpan=document.getElementById('subnav');
+		var aSpan2=document.getElementById('subnav2');
+		var aSpan3=document.getElementById('subnav3');
+		var aSpan4=document.getElementById('subnav4');
+		var listd = document.getElementById("listd");
+		var listd2 = document.getElementById("listd2");
+		var listd3 = document.getElementById("listd3");
+		var listd4 = document.getElementById("listd4");
+		mouse(aSpan,listd);
+		mouse(aSpan2,listd2);
+		mouse(aSpan3,listd3);
+		mouse(aSpan4,listd4);
+		function mouse(aSpan,listd){
+			aSpan.onmousemove=function(){
+				listd.className="liname";
+			}
+			aSpan.onmouseout=function(){
+				listd.className="listdiv";
+			}
+		}
+		
+};			
+</script>
+	
+	</head>
+	<body>  
+	<!-- 导航条-->
+	<div class = "navigation" >
+		<ul class="ull" style="list-style-type:none">
+			<li class="linka" style="float:left"><a id="loginSentence" href = "login" target="blank">你好，请登录</a></li>
+			<li id="mySeller" class="linka" style="float:left;padding-left:25px;"><a href = "javascript:void(0);"  target="blank">我的卖家</a></li>
+			<li class="linka" style="float:right;padding:0 0 0 20px"><a href = "/SchoolShop/pages/me/shopping_car.html" target="blank">我的购物车</a></li>
+			<li class="linka" style="float:right"><a href = "/SchoolShop/regist" target="blank">免费注册</a></li>
+		</ul>
+	</div>
+	<!-- 搜索栏-->
+	<div class = "search">
+		<div class="img">
+			<img src="school.jpg" height="115px" width="120px"/>
+		</div>
+		<div class="bar">
+		<!-- action属性类似：action="action_page.php"  action="https://www.baidu.com/"-->
+			<div>
+				<input id="searchtext" type="text" name="searchtext" value="请输入要搜索的宝贝">
+				<button	id="serachButton" type="sumbit" value="搜素"></button>
+			</div>
+		</div>
+	</div>
+	<div class="line"></div>
+	<!-- 分类框-->
+	<div class = "classification">
+		<div class="area1" style="height:420px">
+			<div id="subnav" >
+				<span id="one">食品</span>
+				<div id="listd" class="listdiv">
+					<ul>
+						<li><a href="1.html" target="blank">面包</a></li>
+						<li><a href="#">泡面</a></li>
+						<li><a href="#">饮料</a></li>
+						<li><a href="#">饼干</a></li>
+						<li><a href="#">糖果</a></li>
+						<li><a href="#">膨化食品</a></li>
+						<li><a href="#">坚果零食</a></li>
+						<li><a href="#">辣条</a></li>
+						<li><a href="#">腌制零食</a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="imgone">
+				<ul id="img1"> <!--div标签是会换行-->
+				<li ><img src="https://gd1.alicdn.com/imgextra/i1/2250731022/O1CN01vt8Z5m1JQ7G5Gnld2_!!2250731022.jpg" alt=""/></li>
+				<li ><img src="http://img5.21food.cn/img/album/2017/10/17/food13490291014009Tf.jpg"alt=""/></li>
+				<li ><img src="http://5b0988e595225.cdn.sohucs.com/q_70,c_zoom,w_640/images/20180926/d4cfba7bc0154ee7a62a045834991849.jpeg" alt=""/></li>
+				<li ><img src="http://www.globalhexi.com/hexishop/upload/image/201509/big/4698908e1f1d409eb9bb755043cfd089.jpg" alt=""/></li>
+				<li ><img src="https://gd1.alicdn.com/imgextra/i1/2250731022/O1CN01vt8Z5m1JQ7G5Gnld2_!!2250731022.jpg" alt=""/></li>
+				</ul>
+			</div>
+			<div>
+				<ul id="navDiv">
+					<a href="javascript:;"></a>
+					<a href="javascript:;"></a>
+					<a href="javascript:;"></a>
+					<a href="javascript:;"></a>
+				</ul>
+			</div>
+		</div>
+		<div class="area2" style="height:420px">
+			<div id="subnav2">
+				<span id="two">日常用品</span>
+				<div id="listd2" class="listdiv">
+					<ul>
+						<li><a href="1.html" target="blank">洗发水</a></li>
+						<li><a href="#">沐浴露</a></li>
+						<li><a href="#">洗衣液</a></li>
+						<li><a href="#">香皂</a></li>
+						<li><a href="#">衣架</a></li>
+						<li><a href="#">拖把</a></li>
+						<li><a href="#">塑料桶盆</a></li>
+						<li><a href="#">毛巾</a></li>
+						<li><a href="#">杯子</a></li>
+						<li><a href="#">床具</a></li>
+						<li><a href="#">花露水</a></li>
+						<li><a href="#">杀虫剂</a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="imgtwo">
+				<ul id="img2">
+					<li><img src="http://www.t-biao.com/tubiaoJDEwLmFsaWNkbi5jb20vdGZzY29tL2kxLzU2NDk2MDIwL1RCMjBHVjhYRWFmRjFKankxWGJYWGFZaVhYYV8hITU2NDk2MDIwJDk.jpg" alt=""/></li>
+					<li><img src="http://img001.hc360.cn/y3/M03/5F/70/wKhQh1W_raaEXz2bAAAAAODQt54781.jpg" alt=""/></li>
+					<li><img src="http://l.b2b168.com/2017/05/10/13/201705101337105519784.jpg" alt=""/></li>
+					<li><img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1557314534099&di=e997098fbe184dfa4d6d7f2381768a1d&imgtype=0&src=http%3A%2F%2Fimgupload.youboy.com%2Fimagestore20170215994e1f5a-72f3-4286-89b8-85b1d3115f8e.jpg" alt=""/></li>
+					<li><img src="http://www.t-biao.com/tubiaoJDEwLmFsaWNkbi5jb20vdGZzY29tL2kxLzU2NDk2MDIwL1RCMjBHVjhYRWFmRjFKankxWGJYWGFZaVhYYV8hITU2NDk2MDIwJDk.jpg" alt=""/></li>
+				</ul>
+			</div>
+			<div>
+				<ul id="navDiv2">
+				<a href="javascript:;"></a>
+				<a href="javascript:;"></a>
+				<a href="javascript:;"></a>
+				<a href="javascript:;"></a>
+				</ul>
+			</div>		
+		</div>
+		<div class="area3" style="height:420px" >
+			<div id="subnav3">
+				<span id="three">书籍</span>
+				<div id="listd3" class="listdiv">
+					<ul>
+						<li><a href="1.html" target="blank">马列主义、毛泽东思想</a></li>
+						<li><a href="#">哲学</a></li>
+						<li><a href="#">社会科学</a></li>
+						<li><a href="#">政治、法律</a></li>
+						<li><a href="#">经济</a></li>
+						<li><a href="#">文学</a></li>
+						<li><a href="#">艺术</a></li>
+						<li><a href="#">计算机专业图书</a></li>
+						<li><a href="#">英语辅导资料</a></li>
+						<li><a href="#">生物科学</a></li>
+						<li><a href="#">工业技术</a></li>
+						<li><a href="#">数理科学</a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="imgthree">
+				<ul id="img3">
+					<li><img src="https://img12.360buyimg.com/n1/jfs/t1/1459/14/5270/182156/5b9f3c5aEe86f3146/58a990ba3efed972.jpg" alt=""/></li>
+					<li><img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1557314879027&di=1688a56f20cd0c85a39a6a8ce5152f96&imgtype=0&src=http%3A%2F%2Fimg.go007.com%2F2016%2F11%2F28%2Fa7079958a8cfcba5_0.jpg"alt=""/></li>
+					<li><img src="https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1558805615,3793641402&fm=15&gp=0.jpg"alt=""/></li>
+					<li><img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1557314989233&di=89d9689052a75c0be71abf57b96ddd9d&imgtype=0&src=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FrzBAlpju3w4n41vDzicGPiaFvh1DhLVrea2HZoxZ9LKtl8hQkUzaC2DiaGLSjIuS6dZ0Na3kDKrPp8quVB0W6FEpQ%2F640%3Fwx_fmt%3Djpeg" alt=""/></li>
+					<li><img src="https://img12.360buyimg.com/n1/jfs/t1/1459/14/5270/182156/5b9f3c5aEe86f3146/58a990ba3efed972.jpg" alt=""/></li>
+				</ul>
+			</div>
+			<div>
+				<ul id="navDiv3">
+				<a href="javascript:;"></a>
+				<a href="javascript:;"></a>
+				<a href="javascript:;"></a>
+				<a href="javascript:;"></a>
+			</ul>
+			</div>
+		</div>
+		<div class="area4" style="height:420px">
+			<div id="subnav4">
+				<span id="four">文具</span>
+				<div id="listd4" class="listdiv">
+					<ul>
+						<li><a href="1.html" target="blank">笔记本</a></li>
+						<li><a href="#">水笔</a></li>
+						<li><a href="#">圆珠笔</a></li>
+						<li><a href="#">铅笔</a></li>
+						<li><a href="#">钢笔</a></li>
+						<li><a href="#">笔筒</a></li>
+						<li><a href="#">笔芯</a></li>
+						<li><a href="#">便利贴</a></li>
+						<li><a href="#">尺子</a></li>
+						<li><a href="#">文件袋</a></li>
+						<li><a href="#">文件封套</a></li>
+						<li><a href="#">计算器</a></li>
+					</ul>
+				</div>
+			</div>
+				
+				<div id="imgfour">
+					<ul id="img4">
+						<li><img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1557315068224&di=1f9b56d604050ea2185098d9fdf3b55d&imgtype=0&src=http%3A%2F%2Fimg4q.duitang.com%2Fuploads%2Fblog%2F201505%2F18%2F20150518023453_yKQGj.jpeg" alt=""/></li>
+						<li><img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1557315125092&di=676e3518d3d897336d596e05c4864d28&imgtype=0&src=http%3A%2F%2Fimg2.99114.com%2Fgroup1%2FM00%2FFD%2F0E%2FwKgGTFkVo1mAOrMlAAHOd6acwXk737.jpg" alt=""/></li>
+						<li><img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1557315147442&di=f07d3b05b4d44975e192fbaa8ddba134&imgtype=0&src=http%3A%2F%2Fimg.alicdn.com%2Ftfscom%2Fi4%2F3211669832%2FTB2iOhbf_tYBeNjy1XdXXXXyVXa_%2521%25213211669832.jpg" alt=""/></li>
+						<li><img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1557315171513&di=c856c8138b75825ebb5bc3a8549a8c7a&imgtype=0&src=http%3A%2F%2Fimage5.suning.cn%2Fuimg%2Fb2c%2Fnewcatentries%2F0070088434-000000010031711094_3_800x800.jpg" alt=""/></li>
+						<li><img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1557315068224&di=1f9b56d604050ea2185098d9fdf3b55d&imgtype=0&src=http%3A%2F%2Fimg4q.duitang.com%2Fuploads%2Fblog%2F201505%2F18%2F20150518023453_yKQGj.jpeg" alt=""/></li>
+					</ul>
+				</div>
+				<div>
+					<ul id="navDiv4">
+					<a href="javascript:;"></a>
+					<a href="javascript:;"></a>
+					<a href="javascript:;"></a>
+					<a href="javascript:;"></a>
+				</ul>
+				</div>
+				
+		</div>
+	</div> 
+	</body>
+</html>

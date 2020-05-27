@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+
+ 
+
+<html>
+
+<head>
+	
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js""></script>
+		<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.css">
+		<script src="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.js"></script>
+		<script src="https://unpkg.com/bootstrap-table@1.14.2/dist/locale/bootstrap-table-zh-CN.min.js"></script>
+		<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+		<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		
+<script type="text/javascript">
+		$(document).ready(function(){
+			var url = window.location.search;
+			
+			  $("table").bootstrapTable({
+				  url: "/SchoolShop/getAllUsers",
+				  method:"post",
+				  contentType : "application/x-www-form-urlencord",
+				  
+				 //【其它设置】
+                 locale:'zh-CN',//中文支持
+                 pagination: true,//是否开启分页（*）
+                 pageNumber:1,//初始化加载第一页，默认第一页
+                 pageSize: 5,//每页的记录行数（*）
+                 pageList: [2,3,5],//可供选择的每页的行数（*）
+                 sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
+                
+                 
+                 columns: [
+                     {field: 'userID',title: '用户ID'}, 
+                     {field: 'userMemberShip',title: '用户会员名'},
+                     {field: 'userAccount',title: '用户账号'}, 
+                     {field: 'userPassword',title: '用户密码'}
+                   ]
+		      }) 
+		  }); 
+			
+			
+		</script>
+</head>
+<body>
+
+
+<div class="navitagorDiv">
+	<nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+		
+		<a href="mange.html" class="navbar-brand" href="admin_category_list">分类管理</a>
+		<a href="mange_user.html" class="navbar-brand" href="admin_user_list">用户管理</a>
+		<a href="mange_orders.html" class="navbar-brand" href="admin_order_list">订单管理</a>
+	</nav>
+</div>
+
+<br/>
+<br/>
+<br/>
+<table id=list" class="table table-striped" style="weigth:500px ;height:500px ; font-size:20px;"></table>
+
+
+
+
+</body>
+</html>
+

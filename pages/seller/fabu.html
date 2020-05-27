@@ -1,0 +1,268 @@
+<!DOCYTPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>卖家中心-宝贝信息管理</title>
+	<style type="text/css">
+		*{margin:0;}
+		a{
+			text-decoration:none;
+			color:black;
+		}
+		body{
+			background:#f6f6f6;
+		}
+		.one{
+			height:24px;
+			background:#f6f6f6;
+			font-size:13px;
+			opacity:0.6;
+			padding-top:6px;
+		}
+		#onea a:hover{
+			background:#fa364a;
+		}
+		.two{
+			height:60px;
+			background:#0193de;	
+			padding-left:180px;
+			letter-spacing:4px;
+		}
+		#name{
+			display:inline-block;
+			font-size:25px;
+			padding-top:12px;
+			color:white;
+		}
+		.three{
+			height:633px;
+		}
+		.left{
+			width:160px;
+			height:500px;
+			background:white;
+			margin-left:180px;
+			margin-top:30px;
+			padding-top:20px;
+			letter-spacing:2px;
+			line-height:30px;
+		}
+		.left a{
+			text-decoration:none;
+			color:black;
+			font-size:15px;
+			padding-top:5px;
+			opacity:0.6;
+			padding-left:30px;
+		}
+		.left a:hover{
+			font-size:18px;
+			color:#369fdd;
+		}
+		.left span{
+			padding-left:10px;
+			font-size:20px;
+		}
+		.rightone a:hover,table a:hover{
+			color:#369fdd;
+		}
+		.op select,.opone select{
+			font-family:"SimHei";
+			font-size:20px;
+			margin-left:50px;
+			margin-top:10px;
+			
+		}
+		.op,.opone{
+			float:left;
+			opacity:0.5;
+		}
+	</style>
+	<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.min.js"></script>
+	<script>
+	function secondClick(arg1){
+		var value = $(arg1.target).attr("value");
+		$("#GoodsCategory").attr("value",value);
+   	 	$("#GoodsCategory").attr("readonly","on");
+   	 	
+		console.log(value);
+		var page = "/SchoolShop/getCategoryAttribute?value="+value;
+		$.ajax({
+             type:"post",
+             url: page,
+             contentType : "application/x-www-form-urlencode;charset=UTF-8",
+             success: function(result){
+            	 $("#attributeSpace").empty();
+            	 var i;
+            	 for(i=0;i<result.length;i++){
+            		 var span_head = '<span style="padding-left:15px">';
+            		 var span_foot = '</span>';
+            		 var value = result[i];
+            		 var input = '<input id="'+value+'" name="'+value+'" type="text" style="width:100px;font-size:20px" >';
+		             $("#attributeSpace").append(span_head+value+input+span_foot);
+		             if((i+1)%2==0)
+			             $("#attributeSpace").append("<br/><br/>");
+            	 }
+            	 
+             }
+          })
+         }
+	</script>
+	<script>
+		$(document).ready(function(){
+			var page = "/SchoolShop/checkLogin";
+			 $.ajax({
+	             type:"post",
+	             url: page,
+	             async: false,
+	             contentType : "application/json;charset=UTF-8",
+	             success: function(result){
+	            	 if(typeof result['userMemberShip'] !='undefined'){
+	            		 $("#loginSentence").text("欢迎你,"+result['userMemberShip']);
+	            		 $("#loginSentence").attr("href","/SchoolShop/pages/me/shopping_car.html");
+	            	 } 	
+	            	 else
+		            	 window.location.href = "/SchoolShop/pages/sell-login.html";
+	             }
+	          });
+			 
+			var sellerID;	
+			$.ajax({
+	             type:"post",
+	             url: "/SchoolShop/SellercheckLogin",
+	             async: false,
+	             success: function(result){
+	            	 if(typeof result['sellerID'] != 'undefined'){
+	            		 $("#sellerName").text("欢迎使用商家管理,"+result['sellerName']);
+	            		 sellerID = result['sellerID'];
+	            		 alert(sellerID);
+	            	 }
+	            	 	
+	            	 else
+	            		window.location.href = "/SchoolShop/pages/sell-login.html";
+	             }
+           	 
+       		})
+			
+			$(".op option").click(function(){
+				console.log("选中了一级分类");
+				var value = $(this).attr("value");
+				console.log(value);
+				var page = "/SchoolShop/getSecondCategory?value="+value;
+				$.ajax({
+		             type:"post",
+		             url: page,
+		             contentType : "application/x-www-form-urlencode;charset=UTF-8",
+		             success: function(result){
+		            	 $("#hidden select").empty();
+		            	 var i;
+		            	 for(i=0;i<result.length;i++){
+			            	   $("#hidden select").append("<option class='s_option' value='"+result[i]+"'>"+result[i]+"</option>");
+			            	   var child = $("#hidden select").children("option").get(i);
+			            	   var str = child.value;
+			            	   $(child).click(secondClick);  
+			    			}
+		            	 }
+		             })
+		          });  
+			});
+					
+	</script>
+	<script type="text/javascript">
+		window.onload = function(){
+			var foot = window.location.search;
+			var hide_id = document.getElementById("hideID");
+			var id = foot.split("?")[1].split("&")[0].split("=")[1];
+			hide_id.value = id;
+			if(foot!=''){
+				var list = document.getElementsByClassName("link");
+				var i=0;
+				for(;i<list.length;i++){
+					var hr = list[i].href;
+					list[i].href = hr+foot;
+				}
+			}
+		}	
+	</script>
+	
+</head>
+<body>
+	<div class="one" style="padding-left:250px;letter-spacing:4px;padding-right:250px">
+		<a id="loginSentence">沫上稻草</a> <!--/*需要获取用户信息*/-->
+		<span id="onea"style="padding-left:50px"><a href="/SchoolShop/pages/1.html" target="blank" style="text-decoration:none;color:black;">校园网站首页</a></span>
+		<span id="onea"style="float:right"><a href="../me/shopping_car.html" target="blank" style="text-decoration:none;color:black;">我的买家</a></span>
+	</div>
+	<div class="two">
+		<span id="name">卖家工作台</span><!--当没有设置为行内快时，使用padding等无效-->
+	</div>
+	<span id="sellerName" style="font-size:30px ;margin-left:200px;" >店铺名称</span>
+	<div class="three" style="text-decoration:none;">
+		<div class="left" style="font-family:'SimHei';">
+		<div ><a href="sales-statistics.html" style="font-size:25px;padding-left:10px;"><strong >首页</strong></a></div><br>
+			<div><span><strong>宝贝信息管理</strong></span>
+			<br>
+				<a class="link" href="salling.html">出售中的宝贝</a><br>
+				<a class="link" href="fabu.html">发布宝贝</a><br>
+				<a class="link" href="workspace.html">仓库中的宝贝</a>
+			</div>
+			<br>
+			<div><span><strong>订单管理</strong></span><br>
+				<a class="link" id="workspace"href="saled.html">已卖出的宝贝</a><br>
+				<a class="link" href="evaluate.html">评价管理</a><br>
+			</div>
+			<br>
+			<div><span><strong>客户服务</strong></span><br>
+				<a class="link" href="rebund.html">退款管理</a>
+			</div>
+			<br>
+			<div><span><strong>销售管理</strong></span><br>
+				<a class="link" href="sales-statistics.html">销售统计</a>
+			</div>
+		</div>
+		<div class="right" >
+			<div style="background:white;width:1000px;height:260px;transform:translate(38%,-520px);line-height:42px;">
+				<span class="rightone"style="font-size:15px;padding-left:15px;opacity:0.7">宝贝信息管理&raquo <a href="fabu.html">发布宝贝</a></span><br>
+				<div class="op" >
+						<select name="one" id="first" style="">
+							<option value="食品" selected="selected">食品</option>
+							<option value="日常">日常用品</option>
+							<option value="书籍">书籍</option>
+							<option value="文具">文具</option>
+						</select>	
+				</div>
+				<div id="hidden">
+					<select name="two" style="transform:translate(80px,10px); font-family:SimHei; font-size:20px;" size="6" height="200px" width="200px">
+					</select>
+				</div><br>
+			<span style="transform:translate(-760%,120px);float:left;opacity:0.5;">分类:零食&raquo面包</span>
+			</div>
+			<div class="messeage" style="background:white;width:1000px;height:880px;transform:translate(38%,-470px);letter-spacing:5px;">
+			<br>	<span style="font-size:15px;padding-left:15px;opacity:0.7">&raquo基本信息</span><br>
+				<div style="width:900px;height:800px;margin:15px 70px;line-height:50px;opacity:0.5;">
+					<form action="/SchoolShop/InsertGoods" method="post" enctype="multipart/form-data">
+						<span style="padding-left:15px">商品标题:<input id="GoodsName" name="GoodsName" type="text" style="width:500px;font-size:20px" ></span><br>
+						<span style="padding-left:20px">商品描述:<input id="GoodsDescription" name="GoodsDescription" type="text" style="height:300pxwidth:500px;font-size:20px"></span><br>
+						<span style="padding-left:20px;float:left;">商品图片:</span>
+						<div>上传图像 <input type="file" id="GoodsIMG" name="GoodsIMG"></div>
+						<span style="padding-left:20px">商品类别:<input id="GoodsCategory" name="GoodsCategory" type="text" style="height:300pxwidth:500px;font-size:20px"></span><br>
+						<input type="hidden" id="hideID" name="hideID"/>
+						<span style="padding-left:20px">商品价格:<input id="GoodsPrice" name="GoodsPrice" type="text" style="height:300pxwidth:500px;font-size:20px"></span><br>
+						<span style="padding-left:20px">商品库存:<input id="GoodsNumber" name="GoodsNumber" type="text" style="height:300pxwidth:500px;font-size:20px"></span><br>
+						<br/>
+						<hr/>
+						<br/>
+						<div id="attributeSpace">
+						
+						</div>
+						<span style="margin-top:30px;padding-left:350px;margin-right:50px;"><input type="submit" value="发布" style="width:80px;height:30px;"></span>
+						<span ><input type="reset" value="重置" style="width:80px;height:30px;"></span>
+					</form>
+				</div>
+			
+			</div>
+		</div>
+	</div>
+	
+	
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCYTPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>卖家中心-销售统计</title>
+	<style type="text/css">
+		*{margin:0;}
+		a{
+			text-decoration:none;
+			color:black;
+		}
+		body{
+			background:#f6f6f6;
+		}
+		.one{
+			height:24px;
+			background:#f6f6f6;
+			font-size:13px;
+			opacity:0.6;
+			padding-top:6px;
+		}
+		#onea a:hover{
+			background:#fa364a;
+		}
+		.two{
+			height:60px;
+			background:#0193de;	
+			padding-left:180px;
+			letter-spacing:4px;
+		}
+		#name{
+			display:inline-block;
+			font-size:25px;
+			padding-top:12px;
+			color:white;
+		}
+		.three{
+			height:633px;
+		}
+		.left{
+			width:160px;
+			height:500px;
+			background:white;
+			margin-left:180px;
+			margin-top:30px;
+			padding-top:20px;
+			letter-spacing:2px;
+			line-height:30px;
+		}
+		.left a{
+			text-decoration:none;
+			color:black;
+			font-size:15px;
+			padding-top:5px;
+			opacity:0.6;
+			padding-left:30px;
+		}
+		.left a:hover{
+			font-size:18px;
+			color:#369fdd;
+		}
+		.left span{
+			padding-left:10px;
+			font-size:20px;
+		}
+		table{
+			text-align:center;
+		}
+		.sale{
+			width:250px;
+			height:80px;
+			float:left;
+			text-align:center;
+		}
+		.rightone a:hover,table a:hover{
+			color:#369fdd;
+		}
+		.a{
+			color:#369fdd;
+			font-size:50px;
+			padding-left:40px;
+		}
+	</style>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			var foot = window.location.search;
+			var sellerID;
+			var page = "/SchoolShop/checkLogin";
+			 $.ajax({
+	             type:"post",
+	             url: page,
+	             contentType : "application/json;charset=UTF-8",
+	             success: function(result){
+	            	 if(typeof result['userMemberShip'] !='undefined'){
+	            		 $("#loginSentence").text("欢迎你,"+result['userMemberShip']);
+	            		 $("#loginSentence").attr("href","/SchoolShop/pages/me/shopping_car.html");
+	            	 } 	
+	            	 else
+		            	 window.location.href = "/SchoolShop/pages/sell-login.html";
+	             }
+	          });
+			
+			$.ajax({
+	             type:"post",
+	             url: "/SchoolShop/SellercheckLogin",
+	             async: false,
+	             success: function(result){
+	            	 if(typeof result['sellerID'] != 'undefined'){
+	            		 $("#sellerName").text("欢迎使用商家管理,"+result['sellerName']);
+	            		 sellerID = result['sellerID'];
+	            	 }
+	            	 else
+	            		window.location.href = "/SchoolShop/sell-login";
+	             }
+           	 
+       		})
+			
+			if(foot!=''){
+				var list = document.getElementsByClassName("link");
+				var i=0;
+				for(;i<list.length;i++){
+					var hr = list[i].href;
+					list[i].href = hr+foot;
+				}
+			}
+			
+			$.ajax({
+		             type:"post",
+		             url: "/SchoolShop/getSalesNumber?sellerID="+sellerID,
+		             async: false,
+		             success: function(result){
+		            	 var i=0;
+		            	 for( ;i<result.length;i++){
+		            		 var e = result[i+''];
+		            		 var id = e['time'];
+		            		 var val = e['salesNum'];
+		            		 console.log(e);
+		            		 $("#"+id).text(val);
+		            	 }
+		            	 $("#today").text($("#今日").text());
+		            	 $("#week").text($("#近一周").text());
+		            	 $("#month").text($("#近一个月").text());
+		             }
+	            	 
+	        })
+	        
+	        $.ajax({
+		             type:"post",
+		             url: "/SchoolShop/getSalesMoney?sellerID="+sellerID,
+		             async: false,
+		             success: function(result){
+		            	$("#totalSales").text(result);
+		             }
+	            	 
+	        })
+	        
+	        $.ajax({
+	             type:"post",
+	             url: "/SchoolShop/getOneDayMoney?sellerID="+sellerID,
+	             async: false,
+	             success: function(result){
+	            	if(result == ''){
+	            		$(".a").text("0");
+	            		return;
+	            	}
+	            	$(".a").text(result);
+	             }
+           	 
+       })
+
+			
+		});
+		
+	</script>
+</head>
+<body>
+	<div class="one" style="padding-left:250px;letter-spacing:4px;padding-right:250px">
+		<a id="loginSentence">沫上稻草</a> <!--/*需要获取用户信息*/-->
+		<span id="onea"style="padding-left:50px"><a href="/SchoolShop/pages/1.html" target="blank" style="text-decoration:none;color:black;">校园网站首页</a></span>
+		<span id="onea"style="float:right"><a href="../me/shopping_car.html" target="blank" style="text-decoration:none;color:black;">我的买家</a></span>
+	</div>
+	<div class="two">
+		<span id="name">卖家工作台</span><!--当没有设置为行内快时，使用padding等无效-->
+	</div>
+	<span id="sellerName" style="font-size:30px ;margin-left:200px;" >店铺名称</span>
+	<div class="three" style="text-decoration:none;">
+		<div class="left" style="font-family:'SimHei';">
+			<div ><a href="sales-statistics.html" style="font-size:25px;padding-left:10px;"><strong >首页</strong></a></div><br>
+			<div><span><strong>宝贝信息管理</strong></span>
+			<br>
+				<a class="link" href="salling.html">出售中的宝贝</a><br>
+				<a class="link" href="fabu.html">发布宝贝</a><br>
+				<a class="link" href="workspace.html">仓库中的宝贝</a>
+			</div>
+			<br>
+			<div><span><strong>订单管理</strong></span><br>
+				<a class="link" href="saled.html">已卖出的宝贝</a><br>
+				<a class="link" href="evaluate.html">评价管理</a><br>
+			</div>
+			<br>
+			<div><span><strong>客户服务</strong></span><br>
+				<a class="link" href="rebund.html">退款管理</a>
+			</div>
+			<br>
+			<div><span><strong>销售管理</strong></span><br>
+				<a class="link" href="sales-statistics.html">销售统计</a>
+			</div>
+		</div>
+		<div class="right" style="font-family:'SimHei'">
+			<div style="background:white;height:100px;width:800px;transform:translate(50%,-520px)">
+				<div class="sale"><span id="today" style="font-size:60px;color:#83c4ea">20</span><br><strong style="font-size:12px">本日销售量</strong></div>
+				<div class="sale"><span id="week" style="font-size:60px;color:#83c4ea">50</span><br><strong  style="font-size:12px">本周销售量</strong></div>
+				<div class="sale"><span id="month" style="font-size:60px;color:#83c4ea">100</span><br><strong  style="font-size:12px">本月销售量</strong></div>
+			</div>
+			<div style="background-color:white;height:200px;width:800px;transform:translate(50%,-480px);"><br>
+				<span class="rightone"style="font-size:15px;padding-left:15px;line-height:8px">销售管理&raquo <a class="link" href="sales-statistics.html">销售统计</a></span>
+				<br><br><div style="width:300px;position:relative;margin-left:50px;">
+					<img style="margin-left:40px;margin-top:20px;" src="success.svg" height="60px" width="70px" />
+					<span style="position:absolute;padding-top:15px;font-size:20px;opacity:0.5;padding-left:30px;">今日销售额: <br><b class="a">0</b></span>
+				</div>	
+				
+				
+			</div>
+			<div style="height:350px;width:800px;background-color:white;transform:translate(50%,-440px);"><br>
+			<span style="font-size:20px;opacity:0.5;padding-left:30px;line-height:15px">销售情况:</span>
+				<br><br>
+				<table frame=box style="width:650px;height:200px;margin-left:60px;padding:10px;">
+					<tr style="font-size:12px;opacity:0.5;height:30px">
+						<td></td>
+						<td >今日</td>
+						<td >近两日</td>
+						<td >近一周</td>
+						<td >近一个月</td>
+						<td >近三个月</td>
+					</tr>
+					<tr>
+						<td>销售量</td>
+						<td id="今日">0</td>
+						<td id="近两日">0</td>
+						<td id="近一周">0</td>
+						<td id="近一个月">0</td>
+						<td id="近三个月">0</td>
+					</tr>
+				</table><br>
+				<span style="font-size:20px;opacity:0.5;padding-left:30px;line-height:15px">总销售额(元):<span id="totalSales"></span></span>
+				<br><br><span style="font-size:10px;opacity:0.5;padding-left:35px;line-height:8px">注:从注册店铺开始算起</span>
+			</div>
+		</div>
+	</div>
+	
+</body>
+</html>

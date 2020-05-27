@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js""></script>
+<script type="text/javascript">
+	window.onload = function(){
+		var foot = window.location.search;
+		var goodsID = foot.split("=")[1];
+		$("#goodsID").val(goodsID);
+		
+		//请求商品基本信息ajax
+		$.ajax({
+	             type:"post",
+	             url: "/SchoolShop/edit_getGoodsBasicMessage?goodsID="+goodsID,
+	             success: function(result){
+	            	 var i;
+	            	 var goodsName = result[0+'']['goodsName'];
+	            	 var goodsPrcie = result[0+'']['goodsPrice'];
+	            	 var Description = result[0+'']['description'];
+	            	 $(".GoodsBasicAttribute").append("<font style='margin-left:350px'>商品基本信息</font><hr/>");
+            		 $(".GoodsBasicAttribute").append("<span style='margin-left:30px;'> 上传商品图片 :<input style='width:600px;height:50px;font-size:18px;' type='file' name='GoodsIMG'/>"+"</span><br/><br/>");
+            		 $(".GoodsBasicAttribute").append("<span style='margin-left:30px;'> 商品名称 :<input style='width:600px;height:50px;font-size:18px;' type='text' name='GoodsName' value='"+goodsName+"'/>"+"</span><br/><br/>");
+            		 $(".GoodsBasicAttribute").append("<span style='margin-left:30px;'> 商品价格 :<input style='width:600px;height:50px;font-size:18px;' type='text' name='GoodsPrice' value='"+goodsPrcie+"'/>"+"</span><br/><br/>");
+            		 $(".GoodsBasicAttribute").append("<span style='margin-left:30px;'> 商品描述 :<input style='width:600px;height:50px;font-size:18px;' type='text' name='Description' value='"+Description+"'/>"+"</span><br/><br/>");
+	             }
+           	 
+       	 })
+		//请求商品属性ajax
+		$.ajax({
+	             type:"post",
+	             url: "/SchoolShop/edit_getAttributeNameAndValue?goodsID="+goodsID,
+	             success: function(result){
+	            	 var i;
+	            	 $(".GoodsAttribute").append("<font style='margin-left:350px'>商品属性表</font><hr/>")
+	            	 for(i=0;i<result.length;i++){
+	            		 var name = result[''+i]['categoryAttributeName'];
+	            		 var value = result[''+i]['gavalue'];
+	            		 console.log(name+' '+value);
+	            		 $(".GoodsAttribute").append("<span style='margin-right:30px;'>"+name+" :"+"<input style='width:280px;height:50px;font-size:18px;' type='text' name='"+name+"' value='"+value+"'/>"+"</span>");
+	            		 if((i+1)%2==0)
+	            			 $(".GoodsAttribute").append("<br/><br/><br/>");
+	            	 }
+	            	 
+	             }
+           	 
+       	 })
+	}
+</script>
+</head>
+<body>
+	<form  method="post" action="/SchoolShop/EditGoods" style="transform:translate(55%,30px);border-width:2px;border-style: solid;width:800px;height:900px;" enctype="multipart/form-data">
+		<input id="goodsID" type="hidden" name="goodsID"/>
+		<div class="GoodsBasicAttribute">
+		
+		</div>
+		<hr>
+		<div class="GoodsAttribute">
+		
+		</div>
+		<input type="submit" value="提交商品修改信息" style="margin-left:300px;margin-top:10px;height:50px;width:150px"></input>
+	</form>
+	
+</body>
+</html>

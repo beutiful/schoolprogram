@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>商家登录</title>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js""></script>
+
+	<style type="text/css">
+		*{margin:0;padding:0;}
+		.table{
+			font-family:"SimHei";
+			font-size:25px;
+			letter-spacing:5px;
+			line-height:35px;
+		}
+		.table span{
+			padding-right:20px;
+			line-height:35px;
+			margin:0 30px;
+			font-size:20px;
+		}
+		#one input{
+			width:200px;
+			height:30px;
+		}
+		a{
+			text-decoration:none;
+			color:black;
+			font-size:12px;
+			letter-spacing:1px;
+			margin-left:190px;
+		}
+	</style>
+	<script>
+		function check(){
+			var username = $("#sellerUsername").val();
+			var password = $("#sellerPassword").val();
+			var page =  "/SchoolShop/SellerloginCheck?sellerUsername="+username+"&"+"sellerPassword="+password;
+			 $.ajax({
+	             type:"post",
+	             url: page,
+	             contentType : "application/json;charset=UTF-8",
+	             success: function(result){
+	            	 console.log(result['sellerName']);
+	            	 console.log(result['sellerID']);
+	            	 window.location.href = "/SchoolShop/pages/seller/sales-statistics.html?sellerID="+result['sellerID']+"&"+"userID="+result['userID'];
+	             }
+	          });   
+		    return false;
+		}
+	</script>
+	
+</head>
+<body style="background:#f6f6f6;"> 
+	<div style="font-size:35px;text-align:center;margin-top:100px;opacity:0.3;">账户登录</div>
+	<div style="height:300px;width:700px;margin-left:440px;margin-top:50px;padding:30px 30px;">
+		<div style="height:150px;width:150px;"><img src="sall_login_background.png" /></div>
+		
+		<div class="table" style="height:400px;width:350px; padding-left:15px;transform:translate(40%,-130px);">
+			<form id="upload" action="" method="post" onsubmit="return check();">
+				<span id="one" style="opacity:0.8;">账户<input id="sellerUsername" type="text"></span> <br><br>
+				<span id="one" style="opacity:0.8;">密码<input id="sellerPassword" type="password"></span><br>
+				<span><a href="openShop.html">我要开店</a></span><br>
+				<span ><input type="submit" value="登录" style="width:80px;height:35px;"></span>
+				<span ><input type="reset" value="重置" style="width:80px;height:35px;"></span>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCYTPE html>
+<html>
+<head>
+
+	<meta charset="utf-8">
+	<title>买家中心</title>
+	<style type="text/css">
+		*{margin:0;}
+		a{
+			text-decoration:none;
+			color:black;
+		}
+		body{
+			background:#f6f6f6;
+		}
+		.one{
+			height:24px;
+			background:#f6f6f6;
+			font-size:13px;
+			opacity:0.6;
+			padding-top:6px;
+		}
+		#onea a:hover{
+			background:#fa364a;
+		}
+		.two{
+			height:60px;
+			background:#0193de;	
+			padding-left:180px;
+			letter-spacing:4px;
+		}
+		#name{
+			display:inline-block;
+			font-size:25px;
+			padding-top:12px;
+			color:white;
+		}
+		.three{
+			/*background:#f6f6f6;*/
+			height:633px;
+		}
+		.left{
+			width:160px;
+			height:500px;
+			background:white;
+			margin-left:180px;
+			margin-top:30px;
+			padding-top:20px;
+			letter-spacing:2px;
+			line-height:30px;
+		}
+		.left a{
+			text-decoration:none;
+			color:black;
+			font-size:15px;
+			padding-top:5px;
+			opacity:0.6;
+			padding-left:30px;
+		}
+		.left a:hover{
+			font-size:18px;
+			color:#369fdd;
+		}
+		.left span{
+			padding-left:10px;
+			font-size:20px;
+			/*color:#369fdd;*/
+		}
+		.sale{
+			width:250px;
+			height:80px;
+			float:left;
+			text-align:center;
+		}
+		table{
+			text-align:center
+		}
+		.rightone a:hover,table a:hover{
+			color:#369fdd;
+		}
+	</style>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js""></script>
+	<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.css">
+	<script src="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.js"></script>
+	<script src="https://unpkg.com/bootstrap-table@1.14.2/dist/locale/bootstrap-table-zh-CN.min.js"></script>
+	<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+	  window.onload = function(){
+		  
+		  var page = "/SchoolShop/checkLogin";
+		  var userid;
+		  function createTable(){
+			  $("#table").bootstrapTable('destroy');
+			  $("#table").bootstrapTable({
+      			  url: "/SchoolShop/orders?userid="+userid,
+      			  method:"post",
+      			  contentType : "application/json;charset=utf-8",
+      			  
+      			 //【其它设置】
+                    locale:'zh-CN',//中文支持
+                    pagination: true,//是否开启分页（*）
+                    pageNumber:1,//初始化加载第一页，默认第一页
+                    pageSize: 3,//每页的记录行数（*）
+                    pageList: [2,2,2],//可供选择的每页的行数（*）
+                    sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
+                    
+                    
+                    columns: [
+                    	{field: 'ordersID',title: '订单ID'},
+                        {field: 'goodsIMG',title: '商品图片',
+                      	  formatter:function(value,row,index){
+                      		    var str = 'data:image/png;base64,'+value;
+                      		    return '<img  src='+str+' width="100" height="100" class="img-rounded" >';
+                        	  }
+                        }, 
+                        {field: 'goodsName',title: '商品名称',
+                      	  formatter:function(value,row,index){
+                      		    //alert(value);
+                      			var id = row['goodsID'];
+								return '<a href="/SchoolShop/pages/product-detail.html?id='+row['goodsID']+'">'+row['goodsName']+'</a>';
+                        	  }
+                        },
+                        {field: 'goodsNumber',title: '商品数量'},
+                        {field: 'price',title: '总价格'},
+                        {field: 'sellerName',title: '卖家店名'},
+                        {field: 'createTime',title: '下单时间',
+                        	formatter:function(value,row,index){
+                        		var time = row['createTime'].split(".")[0];
+	            		  		return "<font size='3' >"+time+"</font>";
+              	  			}
+                        
+                        },
+                        {field: 'ordersStatus',title: '订单状态'},
+                        {field: 'button',title: '操作',events: operateEvents,
+                        	  formatter:function(value,row,index){
+                        		  		if(row['ordersStatus']=='待收货'||row['ordersStatus']=='拒绝退款'||row['ordersStatus']=='评价完成'||row['ordersStatus']=='交易完成')
+                        		    		return '<button class="ensure">申请退款</button>'; 	
+                        		    		
+                          	  }
+                        }
+                       ]
+                      
+      			        
+      	      })
+		  }
+		  $.ajax({
+	             type:"post",
+	             url: page,
+	             contentType : "application/json;charset=UTF-8",
+	             success: function(result){
+	            	 if(typeof result['userMemberShip'] !='undefined'){
+			          	 	$("#loginSentence").text("欢迎你,"+result['userMemberShip']);
+			          	 	userid=result['userID'];
+			          	 	createTable();
+	            	 }
+	            		 
+	             }
+	       });
+		  		
+	  }
+	  window.operateEvents = {
+				 "click .ensure" :function (e, value, row, index) {
+					window.location.href = "/SchoolShop/pages/rebund_detail.html?ordersID="+row['ordersID'];
+				 }
+			 }
+	</script>
+</head>
+<body>
+	<div class="one" style="padding-left:250px;letter-spacing:4px;padding-right:250px">
+		<a id="loginSentence">沫上稻草</a> <!--/*需要获取用户信息*/-->
+		<span id="onea"style="padding-left:50px"><a href="../1.html" target="blank" style="text-decoration:none;color:black;">校园网站首页</a></span>
+		<span id="onea"style="float:right"><a href="shopping_car.html" target="blank" style="text-decoration:none;color:black;">我的买家</a></span>
+	</div>
+	<div class="two">
+		<span id="name">我的信息</span><!--当没有设置为行内快时，使用padding等无效-->
+	</div>
+	<div class="three" style="text-decoration:none;">
+		<div class="left" style="font-family:'SimHei';"><br><br>
+			<div><span><strong>购物车</strong></span>
+			<br>
+				<a href="shopping_car.html">购物车管理</a><br>
+			</div>
+			<br>
+			<div><span><strong>已购买</strong></span><br>
+				<a href="yigoumaibaobei.html">已买的宝贝</a><br>
+			</div>
+			<br>
+			<div><span><strong>评价</strong></span><br>
+				<a href="pingjiaguanli.html">评价管理</a>
+			</div>
+			<br>
+			<div><span><strong>退款</strong></span><br>
+				<a href="tuikuanguanli.html">退款管理</a>
+			</div>
+		</div>
+		<div class="right" >
+			
+			<div style="font-family:SimHei;background:white;height:700px;width:800px;transform:translate(50%,-470px);line-height:25px">
+				<span class="rightone"style="font-size:15px;padding-left:15px;opacity:0.7">退款&raquo <a href="">退款管理</a></span>
+				<table id="table">
+				
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

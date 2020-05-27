@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.min.js"></script>
+<script type="text/javascript">
+	window.onload = function(){
+		var key_value = window.location.search;
+		var val = key_value.split("?");
+		var goodsID = (key_value.split("&")[0]).split("=")[1];
+		var goodsNumber = (key_value.split("&")[1]).split("=")[1];
+		$("#goodsID").val(goodsID);
+		$("#goodsNumber").val(goodsNumber);
+		$("#goodsNumber").attr("readonly",true);
+	}
+</script>
+</head>
+<body>
+	<form action="/SchoolShop/buyGoods" style="transform:translate(55%,30px);border-width:2px;border-style: solid;width:800px;height:600px;">
+		<input id="goodsID" id="goodsID" name="goodsID" type="hidden"/>
+		<br/>
+		<br/>
+		<div style="transform:translate(15%,15px);">
+			<font size="6">购买数量:</font><input id="goodsNumber" name="goodsNumber" style="height:30px;width:150px;font-size:22px;" type="text"/>
+		</div>
+		<br/>
+		<br/>
+		<div style="transform:translate(15%,20px);">
+			<font size="6">请输入收货地址:</font><input id="address" name="address" style="height:30px;width:400px;font-size:22px;" type="text"/>
+		</div>
+		<br/>
+		<br/>
+		<div style="transform:translate(15%,25px);">
+			<font size="6">请输入收货人:</font><input id="consignee" name="consignee" style="height:30px;width:400px;font-size:22px;" type="text"/>
+		</div>
+		<br/>
+		<br/>
+		<div style="transform:translate(15%,30px);">
+			<font size="6">请输入收货人电话:</font><input id="consigneeTEL" name="consigneeTEL" style="height:30px;width:400px;font-size:22px;" type="text"/>
+		</div>
+		<br/>
+		<br/>
+		<div style="transform:translate(15%,35px);">
+			<font size="6">请输入备注:</font><input id="tips" name="tips" style="height:30px;width:400px;font-size:22px;" type="text"/>
+		</div>			
+		<button style="transform:translate(200%,100px); height:70px;width:150px;font-size:15px;" id="submit">提交订单</button>
+	</form>
+	
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCYTPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>商品详情信息</title>
+	<style type="text/css">
+		*{margin:0;}
+		a{
+			text-decoration:none;
+			color:black;
+		}
+		body{
+			background:#f6f6f6;
+		}
+		.one{
+			height:24px;
+			background:#f6f6f6;
+			font-size:13px;
+			opacity:0.6;
+			padding-top:6px;
+		}
+		#onea a:hover{
+			background:#fa364a;
+		}
+		.two{
+			height:150px;
+			background:#0193de;	
+			padding-left:180px;
+			letter-spacing:4px;
+			
+		}
+		#name{
+			display:inline-block;
+			font-size:25px;
+			padding-top:12px;
+			color:white;
+		}
+		.three{
+			height:633px;
+		}
+		.left{
+			width:160px;
+			height:500px;
+			background:white;
+			margin-left:180px;
+			margin-top:30px;
+			padding-top:20px;
+			letter-spacing:2px;
+			line-height:30px;
+		}
+		.left a{
+			text-decoration:none;
+			color:black;
+			font-size:15px;
+			padding-top:5px;
+			opacity:0.6;
+			padding-left:30px;
+		}
+		.left a:hover{
+			font-size:18px;
+			color:#369fdd;
+		}
+		.left span{
+			padding-left:10px;
+			font-size:10px;
+		}
+		table{
+			text-align:center;
+		}
+		.sale{
+			width:250px;
+			height:80px;
+			float:left;
+			text-align:center;
+		}
+		.rightone a:hover,table a:hover{
+			color:#369fdd;
+		}
+		.a{
+			color:#369fdd;
+			font-size:50px;
+			padding-left:40px;
+		}
+		.img img{
+			height:400px;
+			width:400px;
+		}
+		#imgtwo img{
+			height:80px;
+			width:80px;
+			margin:20px 20px;
+			margin-left:10px;
+			float:left;
+		}
+		#imgtwo img:hover{
+			border:1px solid #000;
+		}
+		.message span,.end span{
+			font-size:18px;
+			font-family:"SimHei";
+			line-height:80px;
+			letter-spacing:5px;
+		}
+	</style>
+	
+	<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.min.js"></script>
+	
+	
+	<script>
+		window.onload = function(){
+			var key_value = window.location.search;
+			var id = key_value.split("=")[1];
+			//alert(id);
+			 $.ajax({
+	             type:"post",
+	             url: "/SchoolShop/GoodsAttributeMessage/"+id,
+	             contentType : "application/json;charset=UTF-8",
+	             success: function(result){
+	            	var num=1;
+	            	var i;
+	            	for(i=0;i<result.length;i++){
+	            		var key = result[i+'']['categoryAttributeName'];
+	            		var value = result[i+'']['gavalue'];
+	            		var str = key + ' :'+value;
+	            		$("#goodsAttribute").append("<span style='padding-right:120px';>"+str+"</span>");
+	            		if(num%2==0){
+	            			$("#goodsAttribute").append("<br/>");
+	            		}
+	            		num++;
+	            	}
+	            		 
+	             }	
+			});
+			 
+			 $.ajax({
+	             type:"post",
+	             url: "/SchoolShop/getGoodsSalesNum?goodsid="+id,
+	             contentType : "application/json;charset=UTF-8",
+	             success: function(result){
+	            	$("#salesNum").text(result);
+	             }	
+			}); 
+			 
+			 $.ajax({
+	             type:"post",
+	             url: "/SchoolShop/getGoodsAVGReviews?goodsid="+id,
+	             contentType : "application/json;charset=UTF-8",
+	             success: function(result){
+	            	$("#reviewsValues").text(result);
+	             }	
+			});
+			 
+			 $.ajax({
+	             type:"post",
+	             url: "/SchoolShop/GoodsBasicMessage/"+id,
+	             contentType : "application/json;charset=UTF-8",
+	             success: function(result){
+	            	var num=1;
+	            	var i;
+	            	var goodsName = result['0']['goodsName'];
+	            	var goodsPrice = result['0']['goodsPrice'];
+	            	var goodsIMG = 'data:image/png;base64,'+result['0']['goodsIMG'];
+	       	
+	            	//alert(goodsName+" "+goodsPrice);
+	                $("#Goodsname").text(goodsName);
+	                $("#Goodsprice").text(goodsPrice);
+	                $("img").attr("src",goodsIMG);
+	                $("#goods_Number").text("库存数量 :"+result['0']['goodsNumber']);
+	                $("#goods_description").text(result['0']['description']);
+	                console.log(result['0']['goodsNumber']);
+	                console.log(typeof goodsIMG);
+	             }	
+			}); 
+			 
+			 
+			 var page = "/SchoolShop/checkLogin";
+			 $.ajax({
+	             type:"post",
+	             url: page,
+	             contentType : "application/json;charset=UTF-8",
+	             success: function(result){
+	            	 if(typeof result['userMemberShip'] !='undefined'){
+	            		 $("#loginSentence").text("欢迎你,"+result['userMemberShip']);
+	            		 $("#loginSentence").attr("href","/SchoolShop/pages/me/shopping_car.html");
+	            	 } 	
+	            	 else
+		            	 window.location.href = "/SchoolShop/login";
+	             }
+	          });
+			 
+			 $("#buyGoods").click(function(){
+				 window.location.href = "/SchoolShop/pages/order.html?goodsID="+id+"&"+"goodsNumber="+$("#goodsNumber").val();
+			 });
+			 
+			 $("#addGoods").click(function(){
+				 var goodsNumber = $("#goodsNumber").val();
+				 var goodsID = id;
+				 $.ajax({
+					 type:"POST",
+					 url:"/SchoolShop/shoppingCart",
+			         contentType : "application/x-www-form-urlencode;charset=UTF-8",
+			         data:{"GoodsNumber":goodsNumber,"GoodsID":goodsID},
+			         success : function(){alert("收藏成功");}
+				 });
+			 });
+			 
+			 
+		}
+	</script>
+</head>
+<body>
+	<div class="one" style="padding-left:250px;letter-spacing:4px;padding-right:250px">
+		<span ><a id="loginSentence" href = "login" target="blank">你好，请登录</a></span> <!--/*需要获取用户信息*/-->
+		<span id="onea"style="padding-left:50px"><a href="1.html" target="blank" style="text-decoration:none;color:black;">校园网站首页</a></span>
+		<span id="onea"style="margin-left:580px;"><a href="xiugai.html" style="text-decoration:none;color:black;">免费注册</a></span>
+		<span id="onea"style="float:right;"><a href="me/shopping_car.html" target="blank" style="text-decoration:none;color:black;">我的购物车</a></span>
+	</div>
+	<div class="two">
+		<br><br><span id="name" style="font-size:40px;font-family:'SimHei';">校园电子商务网站</span><!--当没有设置为行内快时，使用padding等无效-->
+	</div>
+	<br/><br/><br/>
+	<div class="img" style="height:400px;width:400px;margin-left:50px;padding-top:30px;transform:translate(50%,15px);border:3px solid #000;">
+				<img id="img" src=""  />
+	</div>	
+	<div class="three" style="text-decoration:none;">
+		<div  style="width:1200px;margin:60px 180px;">
+			<div class="message" style="height:400px;width:650px;display:inline-block;transform:translate(98%,-450px);">
+				<span style="padding-right:50px;">商品名称: </span><span id="Goodsname"></span><br>
+				<span style="padding-right:50px;">商品价格: </span><span id="Goodsprice"></span><br>
+				<form action="" method="get"><span>数量:<input id="goodsNumber" type="text" style="width:80px;" value="1"></span>
+					  <span id="goods_Number" style="font-size:12px;margin-left:30px;opacity:0.5;"></span>
+				</form><br>
+				<span>月销量 <span id="salesNum" style="color:#369fdd;font-size:25px"></span></span>
+				<span style="margin-left:50px;">累积平均评分 <span id="reviewsValues" style="color:#369fdd;font-size:25px"></span></span><br>
+				<br><br>
+				<div>
+					<span style="margin-left:80px;"><input id="buyGoods" type="submit" value="立即购买" style="width:150px;height:40px;background:#369fdd;cursor:pointer;color:white"></span>
+					<span style=""><input id="addGoods" type="submit" value="加入购物车" style="width:150px;height:40px;background:#369fdd;cursor:pointer;color:white"></span>
+				</div>
+			</div>
+			<div class="end" style="width:600px;transform:translate(70%,-260px);margin-left:40px;">
+				
+				<span>商品属性</span>
+				<div id="goodsAttribute" style="border:1px solid #000;height:500px;width:750px;">
+					
+				</div>
+				<br>
+				<span>商品描述</span>
+				<div id="goods_description" style="border:1px solid #000;height:100px;width:600px;"></div>
+			</div>
+			
+	</div>
+	</div>
+</body>
+</html>
